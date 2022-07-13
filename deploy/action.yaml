@@ -31,7 +31,6 @@ runs:
         # put env vars into values file
         echo "environment:" > env-values.yaml
         env | grep '^HELM' | sed -e 's/^HELM_//' -e 's/=/: "/' -e 's/^/  /' -e 's/$/"/' >> env-values.yaml
-        cat env-values.yaml
 
         # provide ingress if set
         if [ "${{ env.K8S_INGRESS_HOST }}" != "" ]
@@ -42,7 +41,7 @@ runs:
 
         if [ ${{inputs.debug}} == "true" ]
         then
-          cat env-values.yaml
+          echo $(cat env-values.yaml)
           helm upgrade --install --namespace ${{inputs.namespace}} --dry-run --debug ${{inputs.name}} ${{inputs.chart_directory}} \
           --set image.tag=${{inputs.tag}} \
           -f env-values.yaml

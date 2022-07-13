@@ -25,7 +25,8 @@ runs:
         fi
 
         # put env vars into values file
-        echo "environment: ${{ toJson(env) }}" > env-values.yaml
+        echo "environment:" > env-values.yaml
+        env  | sed -e 's/=/: "/' -e 's/^/  /' -e 's/$/"/' >> env-values.yaml
         #env | grep '^HELM' | sed -e 's/^HELM_//' -e 's/=/: "/' -e 's/^/  /' -e 's/$/"/' >> env-values.yaml
 
         # provide ingress if set

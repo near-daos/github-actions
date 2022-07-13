@@ -9,6 +9,10 @@ inputs:
     default: latest
   chart_directory:
     description: Location of helm chart
+  debug:
+    description: whether to enble debug logging
+    default: "false"
+    required: false
 
 runs:
   using: 'composite'
@@ -18,7 +22,7 @@ runs:
     uses: koslib/helm-eks-action@v1.24.1
     with:
       command: |
-        if [ "$ACTIONS_STEP_DEBUG" == "true" ]
+        if [ ${{inputs.debug}} == "true" ]
         then
           set -x
           jq --version || true
@@ -35,7 +39,7 @@ runs:
           echo "  host: ${{ env.K8S_INGRESS_HOST }}" >> env-values.yaml
         fi
 
-        if [ "$ACTIONS_STEP_DEBUG" == "true" ]
+        if [ ${{inputs.debug}} == "true" ]
         then
           cat env-values.yaml
           helm upgrade --install --namespace ${{inputs.namespace}} --dry-run --debug ${{inputs.name}} ${{inputs.chart_directory}} \
